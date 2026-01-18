@@ -16,9 +16,9 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Executar seed do banco de dados
-echo "🌱 Executando seed do banco de dados..."
-npm run seed || echo "⚠️ Seed falhou, continuando..."
+# Opcional: Executar seed do banco de dados (comentado por enquanto)
+# echo "🌱 Executando seed do banco de dados..."
+# npm run seed || echo "⚠️ Seed falhou, continuando..."
 
 # Iniciar aplicação
 echo "🚀 Iniciando servidor Next.js..."

@@ -7,10 +7,12 @@ import { withAdmin } from '@/lib/auth/middleware';
 async function handleUpdatePlatform(
   request: NextRequest,
   user: User,
-  { params }: { params: { id: string } },
 ) {
   try {
-    const { id } = params;
+    // Extrair ID da URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();
+
     const body = await request.json();
     const { commissionPercentage, fixedFeePerItem } = body;
 

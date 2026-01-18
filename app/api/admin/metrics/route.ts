@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from '@/lib/database/data-source';
 import { User, UserRole, PaymentStatus } from '@/lib/database/entities/User';
-import { PaymentRequest } from '@/lib/database/entities/PaymentRequest';
+import { PaymentRequest, PaymentRequestStatus } from '@/lib/database/entities/PaymentRequest';
 import { MoreThanOrEqual } from 'typeorm';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
     // Pagamentos aprovados este mês
     const approvedPaymentsThisMonth = await paymentRepo.count({
       where: {
-        status: 'approved',
+        status: PaymentRequestStatus.APPROVED,
         updatedAt: MoreThanOrEqual(startOfMonth),
       },
     });
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     // Pagamentos rejeitados este mês
     const rejectedPaymentsThisMonth = await paymentRepo.count({
       where: {
-        status: 'rejected',
+        status: PaymentRequestStatus.REJECTED,
         updatedAt: MoreThanOrEqual(startOfMonth),
       },
     });
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
 
     // Receita total (todos os pagamentos aprovados)
     const allApprovedPayments = await paymentRepo.count({
-      where: { status: 'approved' },
+      where: { status: PaymentRequestStatus.APPROVED },
     });
     const totalRevenueAllTime = allApprovedPayments * 29.90;
 
@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
       // Buscar pagamentos aprovados no período
       const monthPayments = await paymentRepo
         .createQueryBuilder('payment')
-        .where('payment.status = :status', { status: 'approved' })
+        .where('payment.status = :status', { status: PaymentRequestStatus.APPROVED })
         .andWhere('payment.updatedAt >= :start', { start: monthDate })
         .andWhere('payment.updatedAt < :end', { end: nextMonthDate })
         .getCount();

@@ -12,6 +12,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Set environment variables for build
+ENV MERCADO_PAGO_ACCESS_TOKEN=TEST-12345678901234567890
+ENV NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=TEST-12345678901234567890
+ENV JWT_SECRET=build-secret-key-change-in-production
+
 # Build Next.js application
 RUN npm run build
 
