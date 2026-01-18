@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: 3dlucrativa-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: 3dlucrativa
+      MYSQL_USER: 3dlucrativa
+      MYSQL_PASSWORD: 3dlucrativa
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - 3dlucrativa-network
+
+volumes:
+  mysql_data:
+
+networks:
+  3dlucrativa-network:
+    driver: bridge

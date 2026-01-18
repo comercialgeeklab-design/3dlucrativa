@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS 3dlucrativa;
+CREATE DATABASE 3dlucrativa CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
