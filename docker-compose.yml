@@ -6,20 +6,66 @@ services:
     container_name: 3dlucrativa-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: 3dlucrativa
-      MYSQL_USER: 3dlucrativa
-      MYSQL_PASSWORD: 3dlucrativa
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-3dlucrativa}
+      MYSQL_USER: ${DB_USERNAME:-3dlucrativa}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-3dlucrativa}
+      MYSQL_INITDB_SKIP_TZINFO: 1
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USERNAME:-3dlucrativa}", "-p${DB_PASSWORD:-3dlucrativa}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - 3dlucrativa-network
+
+  next-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 3dlucrativa-app
+    restart: always
+    environment:
+      # Database
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USERNAME: ${DB_USERNAME:-3dlucrativa}
+      DB_PASSWORD: ${DB_PASSWORD:-3dlucrativa}
+      DB_DATABASE: ${DB_DATABASE:-3dlucrativa}
+
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-sua-chave-secreta-muito-segura-aqui-change-em-producao}
+
+      # Mercado Pago
+      MERCADO_PAGO_ACCESS_TOKEN: ${MERCADO_PAGO_ACCESS_TOKEN:-TEST-3072028497805407-011717-2b8a29520b325daf8008755bdf8fb47a-2271905770}
+      NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY: ${NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY:-TEST-7512e7fb-f568-4459-b631-40615cbe05ef}
+
+      # URL Base
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
+
+      # Node environment
+      NODE_ENV: ${NODE_ENV:-production}
+      NEXT_TELEMETRY_DISABLED: 1
+
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./public:/app/public
+      - ./scripts:/app/scripts
     networks:
       - 3dlucrativa-network
 
 volumes:
   mysql_data:
+    driver: local
 
 networks:
   3dlucrativa-network:
