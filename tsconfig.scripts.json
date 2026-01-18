@@ -4,7 +4,8 @@
     "module": "commonjs",
     "target": "ES2021",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "skipLibCheck": true
   },
   "ts-node": {
     "compilerOptions": {
