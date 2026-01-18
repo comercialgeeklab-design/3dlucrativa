@@ -3,6 +3,10 @@ import { getDataSource } from '@/lib/database/data-source';
 import { User } from '@/lib/database/entities/User';
 import { comparePassword, generateToken } from '@/lib/auth/jwt';
 
+// Force Node.js runtime for this API route
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

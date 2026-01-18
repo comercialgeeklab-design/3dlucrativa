@@ -13,6 +13,24 @@ import { Sale } from './entities/Sale';
 import { Platform } from './entities/Platform';
 import { PaymentRequest } from './entities/PaymentRequest';
 
+// Force require reflect-metadata to load first
+require('reflect-metadata');
+
+const entities = [
+  Platform,
+  User,
+  Store,
+  Filament,
+  FilamentPurchase,
+  Product,
+  ProductFilament,
+  Stock,
+  StockPurchase,
+  Inventory,
+  Sale,
+  PaymentRequest,
+];
+
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host: process.env.DB_HOST || 'localhost',
@@ -20,22 +38,9 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || 'root',
   database: process.env.DB_DATABASE || '3dlucrativa',
-  synchronize: process.env.NODE_ENV === 'development',
-  logging: process.env.NODE_ENV === 'development',
-  entities: [
-    Platform,
-    User,
-    Store,
-    Filament,
-    FilamentPurchase,
-    Product,
-    ProductFilament,
-    Stock,
-    StockPurchase,
-    Inventory,
-    Sale,
-    PaymentRequest,
-  ],
+  synchronize: false, // Desabilitar para segurança em produção
+  logging: process.env.DB_LOGGING === 'true',
+  entities: entities,
   migrations: [],
   subscribers: [],
   timezone: 'Z',

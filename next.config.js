@@ -9,10 +9,34 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-    };
+  // Packages that should not be bundled by webpack
+  experimental: {
+    serverComponentsExternalPackages: ['typeorm', 'mysql2', 'reflect-metadata'],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Don't process TypeORM modules with webpack
+      config.externals = [
+        ...(config.externals || []),
+        'typeorm',
+        'mysql2',
+        'mysql',
+        'better-sqlite3',
+        'sqlite3',
+        'pg',
+        'pg-native',
+        'redis',
+        'hiredis',
+        'ioredis',
+        'reflect-metadata',
+      ];
+      
+      // Preserve class names for TypeORM
+      config.optimization = {
+        ...config.optimization,
+        minimize: false,
+      };
+    }
     return config;
   },
 };

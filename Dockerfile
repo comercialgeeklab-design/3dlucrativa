@@ -13,9 +13,17 @@ RUN npm ci
 COPY . .
 
 # Set environment variables for build
+ENV DB_HOST=localhost
+ENV DB_PORT=3306
+ENV DB_USERNAME=dummy
+ENV DB_PASSWORD=dummy
+ENV DB_DATABASE=dummy
+ENV NODE_ENV=production
 ENV MERCADO_PAGO_ACCESS_TOKEN=TEST-12345678901234567890
 ENV NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=TEST-12345678901234567890
 ENV JWT_SECRET=build-secret-key-change-in-production
+ENV NEXT_PUBLIC_API_URL=http://localhost:3000/api
+ENV NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Build Next.js application
 RUN npm run build
